@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="templates.general/fragmentos :: head('Nuevo Vehículo')"></head>
+    <body>
+        <div th:replace="templates.general/fragmentos :: header"></div>
+
+        <div class="container my-4" style="max-width:640px;">
+            <h3 class="mb-3">Registrar vehículo</h3>
+
+            <form th:action="@{/vehiculo/guardar}" method="post" class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Placa</label>
+                    <input name="placa" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Año</label>
+                    <input name="anno" type="number" class="form-control" min="1900" max="2100">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Marca</label>
+                    <input name="marca" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Modelo</label>
+                    <input name="modelo" class="form-control" required>
+                </div>
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a th:href="@{/vehiculo/listado}" class="btn btn-outline-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+
+        <div th:replace="templates.general/fragmentos :: footer"></div>
+    </body>
+</html>

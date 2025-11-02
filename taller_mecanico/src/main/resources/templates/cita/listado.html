@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="general/fragmentos :: head('Citas')"></head>
+    <body>
+        <div th:replace="general/fragmentos :: header"></div>
+
+        <div class="container my-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-3">Citas</h3>
+                <div>
+                    <a th:href="@{/cita/nueva}" class="btn btn-primary btn-sm">Nueva Cita</a>
+                    <a th:href="@{/vehiculo/mis}" class="btn btn-outline-secondary btn-sm">Mis Vehículos</a>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Vehículo</th><th>Servicio</th><th>Mecánico</th>
+                            <th>Fecha</th><th>Hora</th><th>Estado</th><th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${citas}">
+                            <td th:text="${c.idCita}">1</td>
+                            <td th:text="${c.vehiculo.placa}">ABC123</td>
+                            <td th:text="${c.servicio.nombre}">Frenos</td>
+                            <td th:text="${c.mecanico != null ? c.mecanico.nombre : '—'}">—</td>
+                            <td th:text="${c.fecha}">2025-10-28</td>
+                            <td th:text="${c.hora}">09:00</td>
+                            <td>
+                                <span class="badge text-bg-secondary" th:text="${c.estado}">PENDIENTE</span>
+                            </td>
+                            <td class="d-flex gap-2">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   th:href="@{'/cita/' + ${c.idCita} + '/asignar'}">Asignar</a>
+
+                                <form th:action="@{'/cita/' + ${c.idCita} + '/estado'}" method="post" class="d-flex gap-2">
+                                    <select name="estado" class="form-select form-select-sm">
+                                        <option>PENDIENTE</option>
+                                        <option>EN_PROGRESO</option>
+                                        <option>FINALIZADA</option>
+                                        <option>CANCELADA</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Cambiar</button>
+                                </form>
+
+                                <a class="btn btn-sm btn-outline-dark"
+                                   th:href="@{'/cita/' + ${c.idCita} + '/detalle'}">Ver</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div th:replace="general/fragmentos :: footer"></div>
+    </body>
+</html>

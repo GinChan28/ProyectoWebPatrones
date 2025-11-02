@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="templates.general/fragmentos :: head('Mis Vehículos')"></head>
+    <body>
+        <div th:replace="templates.general/fragmentos :: header"></div>
+
+        <div class="container my-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-3">Mis Vehículos</h3>
+                <a th:href="@{/vehiculo/nuevo}" class="btn btn-primary btn-sm">Nuevo</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead><tr><th>Placa</th><th>Marca</th><th>Modelo</th><th>Año</th></tr></thead>
+                    <tbody>
+                        <tr th:each="v : ${vehiculos}">
+                            <td th:text="${v.placa}">ABC123</td>
+                            <td th:text="${v.marca}">Toyota</td>
+                            <td th:text="${v.modelo}">Corolla</td>
+                            <td th:text="${v.anno}">2018</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <a th:href="@{/cita/lista}" class="btn btn-outline-secondary btn-sm">Ir a Citas</a>
+        </div>
+
+        <div th:replace="templates.general/fragmentos :: footer"></div>
+    </body>
+</html>

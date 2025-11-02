@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="general/fragmentos :: head('Inicio - Taller Mecánico')"></head>
+    <body>
+        <div th:replace="general/fragmentos :: header"></div>
+
+        <main class="container mt-4">
+            <div class="text-center">
+                <h1 class="mb-3">Bienvenido al Sistema del Taller Mecánico</h1>
+                <p class="lead">Seleccione una de las opciones para continuar:</p>
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <a th:href="@{/cita/lista}" class="btn btn-primary btn-lg">Ver Citas</a>
+                    <a th:href="@{/vehiculo/mis}" class="btn btn-success btn-lg">Mis Vehículos</a>
+                    <a th:href="@{/inventario/repuestos}" class="btn btn-secondary btn-lg">Inventario</a>
+                </div>
+            </div>
+        </main>
+
+        <div th:replace="general/fragmentos :: footer"></div>
+    </body>
+</html>
+
