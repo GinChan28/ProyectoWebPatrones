@@ -4,7 +4,6 @@
  */
 package com.taller_mecanico.security;
 
-import com.google.cloud.storage.HttpMethod;
 import com.taller_mecanico.repository.UsuarioRepository;
 import com.taller_mecanico.repository.UsuarioRolRepository;
 import java.util.stream.Collectors;
@@ -20,9 +19,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 /**
  *
  * @author megan
@@ -35,34 +31,33 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index", "/login",
-                        "/registro", "/registro/**",
-                        "/css/*", "/js/", "/img/", "/webjars/*").permitAll()
-                .requestMatchers("/vehiculo/*", "/cita/*").hasRole("CLIENTE")
-                .requestMatchers("/mecanico/**").hasRole("MECANICO")
-                .requestMatchers("/admin/*", "/inventario/*").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                        .requestMatchers("/", "/index", "/login",
+                                "/registro", "/registro/**",
+                                "/css/*", "/js/", "/img/", "/webjars/*").permitAll()
+                        .requestMatchers("/vehiculo/*", "/cita/*").hasRole("CLIENTE")
+                        .requestMatchers("/mecanico/**").hasRole("MECANICO")
+                        .requestMatchers("/admin/*", "/inventario/*").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/cita/lista", true)
-                .permitAll()
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/cita/lista", true)
+                        .permitAll()
                 )
                 .logout(log -> log
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .permitAll()
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll()
                 )
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/registro/guardar")
-                );
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/registro/guardar"));
 
         return http.build();
     }
 
     @Bean
-    public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
-        return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean
@@ -81,12 +76,11 @@ public class SecurityConfig {
                     .collect(Collectors.toList());
 
             return User.withUsername(u.getUsername())
-                    .password(u.getPassword()) // se debe colocar {noop}en la clave por temas de encriptacion 
+                    .password(u.getPassword())
                     .authorities(authorities)
                     .accountLocked(Boolean.FALSE.equals(u.getActivo()))
                     .disabled(Boolean.FALSE.equals(u.getActivo()))
                     .build();
         };
-
     }
 }

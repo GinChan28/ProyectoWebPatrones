@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  *
- * @author megan
+ * 
  */
 @Service
 public class CitaService {

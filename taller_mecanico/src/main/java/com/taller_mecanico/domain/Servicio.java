@@ -9,7 +9,7 @@ import lombok.Data;
 
 /**
  *
- * @author megan
+ * 
  */
 @Data
 @Entity
