@@ -55,7 +55,7 @@ public class CitaController {
     @GetMapping("/lista")
     public String lista(Model model) {
         model.addAttribute("citas", citaService.listarTodas());
-        return "/cita/listado";
+        return "redirect:/cita/lista";
     }
 
     @GetMapping("/nueva")
