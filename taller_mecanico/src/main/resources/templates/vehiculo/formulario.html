@@ -1,36 +1,59 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="templates.general/fragmentos :: head('Nuevo Vehículo')"></head>
+    <head th:replace="general/fragmentos :: head(${vehiculo.idVehiculo != null ? 'Editar Vehículo' : 'Nuevo Vehículo'})"></head>
     <body>
-        <div th:replace="templates.general/fragmentos :: header"></div>
+        <div th:replace="general/fragmentos :: header"></div>
 
-        <div class="container my-4" style="max-width:640px;">
-            <h3 class="mb-3">Registrar vehículo</h3>
+        <div class="container py-5">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body">
+                    <h3 class="fw-bold mb-4" th:text="${vehiculo.idVehiculo != null ? 'Editar Vehículo' : 'Registrar Nuevo Vehículo'}"></h3>
 
-            <form th:action="@{/vehiculo/guardar}" method="post" class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Placa</label>
-                    <input name="placa" class="form-control" required>
+                    <form th:action="@{${vehiculo.idVehiculo != null} ? '/vehiculo/actualizar' : '/vehiculo/guardar'}"
+                          th:object="${vehiculo}" method="post">
+
+                        <!-- Campo oculto para edición -->
+                        <input type="hidden" th:field="*{idVehiculo}" />
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Placa</label>
+                                <input type="text" th:field="*{placa}" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Marca</label>
+                                <input type="text" th:field="*{marca}" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Modelo</label>
+                                <input type="text" th:field="*{modelo}" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Año</label>
+                                <input type="number" th:field="*{anno}" class="form-control" min="1900" max="2100" required>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex justify-content-between">
+                            <a th:href="@{/vehiculo/listado}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-1"></i>
+                                <span th:text="${vehiculo.idVehiculo != null ? 'Actualizar' : 'Guardar'}"></span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Año</label>
-                    <input name="anno" type="number" class="form-control" min="1900" max="2100">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Marca</label>
-                    <input name="marca" class="form-control" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Modelo</label>
-                    <input name="modelo" class="form-control" required>
-                </div>
-                <div class="col-12 d-flex justify-content-end gap-2">
-                    <a th:href="@{/vehiculo/listado}" class="btn btn-outline-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </form>
+            </div>
         </div>
 
-        <div th:replace="templates.general/fragmentos :: footer"></div>
+        <div th:replace="general/fragmentos :: footer"></div>
+
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     </body>
 </html>
+
+

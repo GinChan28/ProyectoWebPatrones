@@ -233,5 +233,20 @@ INSERT INTO servicio (nombre, descripcion, precio_base, activo) VALUES
 ('Alineación y balanceo','Servicio de alineación y balanceo',35000,TRUE)
 ON DUPLICATE KEY UPDATE descripcion=VALUES(descripcion), precio_base=VALUES(precio_base), activo=VALUES(activo);
 
+-- Cliente
+INSERT INTO cliente (id_usuario, nombre, telefono) VALUES
+(1, 'Carlos Ramírez', '88810001'),
+(2, 'María Fernández', '88810002'),
+(3, 'Luis Gómez', '88810003'),
+(4, 'Ana Rodríguez', '88810004'),
+(5, 'Jorge Salazar', '88810005');
+
+INSERT INTO usuario (username, password, nombre, apellidos, correo, telefono, ruta_imagen) VALUES
+('carlosr', '1234', 'Carlos', 'Ramírez', 'carlos.ramirez@example.com', '88810001', NULL),
+('mariaf', '1234', 'María', 'Fernández', 'maria.fernandez@example.com', '88810002', NULL),
+('luisg', '1234', 'Luis', 'Gómez', 'luis.gomez@example.com', '88810003', NULL),
+('anar', '1234', 'Ana', 'Rodríguez', 'ana.rodriguez@example.com', '88810004', NULL),
+('jorges', '1234', 'Jorge', 'Salazar', 'jorge.salazar@example.com', '88810005', NULL);
+
 ALTER TABLE usuario DROP CHECK usuario_chk_1;
 

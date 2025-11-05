@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.taller_mecanico.controller;
 
 import com.taller_mecanico.domain.Cita;
@@ -15,10 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- *
- * @author megan
- */
 @Controller
 @RequestMapping("/cita")
 public class CitaController {
@@ -33,8 +25,9 @@ public class CitaController {
     private final RepuestoRepository repuestoRepo;
     private final ArchivoService archivoService;
 
-    public CitaController(CitaService c, VehiculoRepository v, ServicioRepository s, MecanicoRepository m, ClienteRepository cr, ArchivoRepository ar, CitaHistorialEstadoRepository hr,
-            RepuestoRepository rr, ArchivoService as) {
+    public CitaController(CitaService c, VehiculoRepository v, ServicioRepository s, MecanicoRepository m,
+                          ClienteRepository cr, ArchivoRepository ar, CitaHistorialEstadoRepository hr,
+                          RepuestoRepository rr, ArchivoService as) {
         this.citaService = c;
         this.vehiculoRepo = v;
         this.servicioRepo = s;
@@ -55,7 +48,7 @@ public class CitaController {
     @GetMapping("/lista")
     public String lista(Model model) {
         model.addAttribute("citas", citaService.listarTodas());
-        return "redirect:/cita/lista";
+        return "cita/listado";
     }
 
     @GetMapping("/nueva")
@@ -67,30 +60,30 @@ public class CitaController {
 
     @PostMapping("/crear")
     public String crear(@RequestParam Integer idVehiculo,
-            @RequestParam Integer idServicio,
-            @RequestParam String fecha,
-            @RequestParam String hora) {
+                        @RequestParam Integer idServicio,
+                        @RequestParam String fecha,
+                        @RequestParam String hora) {
         citaService.crearCita(idVehiculo, idServicio, LocalDate.parse(fecha), LocalTime.parse(hora));
-        return "/cita/listado";
+        return "redirect:/cita/lista";
     }
 
     @GetMapping("/{id}/asignar")
     public String asignarForm(@PathVariable Integer id, Model model) {
         model.addAttribute("idCita", id);
         model.addAttribute("mecanicos", mecanicoRepo.findAll());
-        return "/cita/asignar";
+        return "cita/asignar";
     }
 
     @PostMapping("/{id}/asignar")
     public String asignar(@PathVariable Integer id, @RequestParam Integer idMecanico) {
         citaService.asignarMecanico(id, idMecanico);
-        return "redirect:/cita/listado";
+        return "redirect:/cita/lista";
     }
 
     @PostMapping("/{id}/estado")
     public String cambiarEstado(@PathVariable Integer id, @RequestParam Cita.Estado estado) {
         citaService.cambiarEstado(id, estado);
-        return "/cita/listado";
+        return "redirect:/cita/lista";
     }
 
     @GetMapping("/{id}/detalle")
@@ -99,7 +92,7 @@ public class CitaController {
         model.addAttribute("archivos", archivoRepo.findByCitaIdCita(id));
         model.addAttribute("historial", historialRepo.findByCitaIdCitaOrderByCambiadoEnAsc(id));
         model.addAttribute("repuestos", repuestoRepo.findAll());
-        return "/cita/detalle";
+        return "cita/detalle";
     }
 
     @PostMapping("/{id}/evidencia")

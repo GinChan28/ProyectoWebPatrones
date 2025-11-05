@@ -1,60 +1,84 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="general/fragmentos :: head('Citas')"></head>
-    <body>
-        <div th:replace="general/fragmentos :: header"></div>
+<head th:replace="general/fragmentos :: head('Citas')"></head>
+<body>
+    <div th:replace="general/fragmentos :: header"></div>
 
-        <div class="container my-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="mb-3">Citas</h3>
-                <div>
-                    <a th:href="@{/cita/nueva}" class="btn btn-primary btn-sm">Nueva Cita</a>
-                    <a th:href="@{/vehiculo/mis}" class="btn btn-outline-secondary btn-sm">Mis Vehículos</a>
-                </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-striped align-middle">
-                    <thead>
-                        <tr>
-                            <th>ID</th><th>Vehículo</th><th>Servicio</th><th>Mecánico</th>
-                            <th>Fecha</th><th>Hora</th><th>Estado</th><th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="c : ${citas}">
-                            <td th:text="${c.idCita}">1</td>
-                            <td th:text="${c.vehiculo.placa}">ABC123</td>
-                            <td th:text="${c.servicio.nombre}">Frenos</td>
-                            <td th:text="${c.mecanico != null ? c.mecanico.nombre : '—'}">—</td>
-                            <td th:text="${c.fecha}">2025-10-28</td>
-                            <td th:text="${c.hora}">09:00</td>
-                            <td>
-                                <span class="badge text-bg-secondary" th:text="${c.estado}">PENDIENTE</span>
-                            </td>
-                            <td class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-primary"
-                                   th:href="@{'/cita/' + ${c.idCita} + '/asignar'}">Asignar</a>
-
-                                <form th:action="@{'/cita/' + ${c.idCita} + '/estado'}" method="post" class="d-flex gap-2">
-                                    <select name="estado" class="form-select form-select-sm">
-                                        <option>PENDIENTE</option>
-                                        <option>EN_PROGRESO</option>
-                                        <option>FINALIZADA</option>
-                                        <option>CANCELADA</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-sm btn-outline-success">Cambiar</button>
-                                </form>
-
-                                <a class="btn btn-sm btn-outline-dark"
-                                   th:href="@{'/cita/' + ${c.idCita} + '/detalle'}">Ver</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Gestión de Citas</h2>
+            <div class="btn-group">
+                <a th:href="@{/cita/nueva}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle"></i> Nueva Cita
+                </a>
+                <a th:href="@{/vehiculo/mis}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-car-front"></i> Mis Vehículos
+                </a>
             </div>
         </div>
 
-        <div th:replace="general/fragmentos :: footer"></div>
-    </body>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th>Vehículo</th>
+                        <th>Servicio</th>
+                        <th>Mecánico</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="c : ${citas}">
+                        <td th:text="${c.idCita}">1</td>
+                        <td th:text="${c.vehiculo.placa}">ABC123</td>
+                        <td th:text="${c.servicio.nombre}">Frenos</td>
+                        <td th:text="${c.mecanico != null ? c.mecanico.nombre : '—'}">—</td>
+                        <td th:text="${c.fecha}">2025-10-28</td>
+                        <td th:text="${c.hora}">09:00</td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${c.estado}">PENDIENTE</span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   th:href="@{'/cita/' + ${c.idCita} + '/asignar'}">
+                                    <i class="bi bi-person-plus"></i>
+                                </a>
+
+                                <a class="btn btn-sm btn-outline-dark"
+                                   th:href="@{'/cita/' + ${c.idCita} + '/detalle'}">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <button class="btn btn-sm btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end p-2">
+                                    <form th:action="@{'/cita/' + ${c.idCita} + '/estado'}" method="post">
+                                        <select name="estado" class="form-select form-select-sm mb-2">
+                                            <option>PENDIENTE</option>
+                                            <option>EN_PROGRESO</option>
+                                            <option>FINALIZADA</option>
+                                            <option>CANCELADA</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-success w-100">Cambiar</button>
+                                    </form>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:replace="general/fragmentos :: footer"></div>
+
+    <!-- Bootstrap Icons CDN (si no lo tienes ya) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
+</body>
 </html>
