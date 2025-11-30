@@ -22,4 +22,6 @@ public interface RepuestoRepository extends JpaRepository<Repuesto, Integer> {
     boolean existsByNombre(String nombre);
 
     Optional<Repuesto> findBySku(String sku);
+    
+    Repuesto findByNombreOrSku(String nombre, String sku);
 }

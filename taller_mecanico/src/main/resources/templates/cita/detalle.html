@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="templates.general/fragmentos :: head('Detalle de cita')"></head>
+    <head th:replace="general/fragmentos :: head('Detalle de cita')"></head>
     <body>
-        <div th:replace="templates.general/fragmentos :: header"></div>
+        <div th:replace="general/fragmentos :: header"></div>
 
         <div class="container my-4">
             <h3>Detalle Cita #<span th:text="${cita.idCita}">1</span></h3>
@@ -86,6 +86,6 @@
             </div>
         </div>
 
-        <div th:replace="templates.general/fragmentos :: footer"></div>
+        <div th:replace="general/fragmentos :: footer"></div>
     </body>
 </html>

@@ -1,5 +1,6 @@
 package com.taller_mecanico.controller;
 
+import com.taller_mecanico.domain.Repuesto;
 import com.taller_mecanico.repository.RepuestoRepository;
 import com.taller_mecanico.service.InventarioService;
 import org.springframework.stereotype.Controller;
@@ -18,14 +19,52 @@ public class InventarioController {
         this.inventarioService = inventarioService;
     }
 
-    // Muestra todos los repuestos disponibles
     @GetMapping("/repuestos")
     public String mostrarRepuestos(Model model) {
         model.addAttribute("repuestos", repuestoRepository.findAll());
         return "inventario/repuestos";
     }
 
-    // Consume un repuesto para una cita específica
+    @GetMapping("/formulario")
+    public String mostrarFormulario(Model model) {
+        model.addAttribute("repuesto", new Repuesto());  
+        return "inventario/formulario";
+    }
+
+    @GetMapping("/formulario/{id}")
+    public String editarRepuesto(@PathVariable Integer id, Model model) {
+        Repuesto repuesto = repuestoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Repuesto no encontrado"));
+        model.addAttribute("repuesto", repuesto);
+        return "inventario/formulario";
+    }
+
+    @PostMapping("/guardar")
+public String guardarRepuesto(@ModelAttribute Repuesto repuesto, Model model) {
+
+    Repuesto existente = repuestoRepository.findByNombreOrSku(
+            repuesto.getNombre(), repuesto.getSku()
+    );
+
+    if (existente != null && 
+       (repuesto.getIdRepuesto() == null || 
+        !existente.getIdRepuesto().equals(repuesto.getIdRepuesto()))) {
+
+        model.addAttribute("repuesto", repuesto);
+        model.addAttribute("error", "Ya existe un repuesto con ese nombre o SKU.");
+        return "inventario/formulario";
+    }
+
+    repuestoRepository.save(repuesto);
+    return "redirect:/inventario/repuestos";
+}
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarRepuesto(@PathVariable Integer id) {
+        repuestoRepository.deleteById(id);
+        return "redirect:/inventario/repuestos";
+    }
+
     @PostMapping("/consumir")
     public String consumirRepuesto(
             @RequestParam("idCita") Integer idCita,
@@ -36,7 +75,6 @@ public class InventarioController {
             inventarioService.consumir(idCita, idRepuesto, cantidad);
             return "redirect:/cita/" + idCita + "/detalle";
         } catch (Exception e) {
-            // Puede loguear el error o redirigir a una página de error personalizada
             return "redirect:/cita/" + idCita + "/detalle?error=true";
         }
     }
