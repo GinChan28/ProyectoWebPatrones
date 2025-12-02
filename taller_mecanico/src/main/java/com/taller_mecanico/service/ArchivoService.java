@@ -11,10 +11,6 @@ import com.taller_mecanico.repository.VehiculoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- *
- * 
- */
 @Service
 public class ArchivoService {
 
@@ -46,6 +42,7 @@ public class ArchivoService {
             a.setUrlPublica(url);
             a.setNombreArchivo(file.getOriginalFilename());
             return archivoRepo.save(a);
+
         } catch (Exception e) {
             throw new RuntimeException("No se pudo subir la evidencia: " + e.getMessage(), e);
         }
@@ -62,8 +59,13 @@ public class ArchivoService {
             a.setUrlPublica(url);
             a.setNombreArchivo(file.getOriginalFilename());
             return archivoRepo.save(a);
+
         } catch (Exception e) {
             throw new RuntimeException("No se pudo subir la foto del vehículo: " + e.getMessage(), e);
         }
+    }
+
+    public java.util.List<Archivo> listarPorCita(Integer idCita) {
+        return archivoRepo.findByCitaIdCita(idCita);
     }
 }

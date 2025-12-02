@@ -95,11 +95,42 @@ public class CitaController {
         return "cita/detalle";
     }
 
+    
+   @GetMapping("/{id}/evidencia")
+public String evidencia(@PathVariable Integer id, Model model) {
+    model.addAttribute("cita", citaService.obtener(id));
+    model.addAttribute("archivos", archivoService.listarPorCita(id));
+    model.addAttribute("historial", historialRepo.findByCitaIdCitaOrderByCambiadoEnAsc(id));
+    model.addAttribute("repuestos", repuestoRepo.findAll());
+    return "cita/detalle";
+}
+
+
     @PostMapping("/{id}/evidencia")
-    public String subirEvidencia(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
-        if (file != null && !file.isEmpty()) {
-            archivoService.subirEvidenciaDeCita(id, file);
+    public String subirEvidencia(
+            @PathVariable("id") Integer idCita,
+            @RequestParam("archivo") MultipartFile archivo,
+            Model model) {
+
+        try {
+            archivoService.subirEvidenciaDeCita(idCita, archivo);
+            return "redirect:/cita/" + idCita + "/detalle";
+
+        } catch (Exception e) {
+
+            var cita = citaService.obtener(idCita);
+            var historial = historialRepo.findByCitaIdCitaOrderByCambiadoEnAsc(idCita);
+            var repuestos = repuestoRepo.findAll();
+            var archivos = archivoService.listarPorCita(idCita);
+
+            model.addAttribute("cita", cita);
+            model.addAttribute("historial", historial);
+            model.addAttribute("repuestos", repuestos);
+            model.addAttribute("archivos", archivos);
+            model.addAttribute("errorMensaje", "Error al subir evidencia: " + e.getMessage());
+
+            return "cita/detalle";
         }
-        return "redirect:/cita/" + id + "/detalle";
     }
+
 }
