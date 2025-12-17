@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Servicio</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="col-md-6 mx-auto">
+
+        <div class="card p-4 shadow rounded-4">
+            <h3 class="fw-bold mb-4"
+                th:text="${servicio.idServicio == null ? 'Nuevo Servicio' : 'Editar Servicio'}">
+            </h3>
+
+            <form th:action="@{/admin/servicios/guardar}"
+                  th:object="${servicio}" method="post">
+
+                <input type="hidden" th:field="*{idServicio}">
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" th:field="*{nombre}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Descripción</label>
+                    <textarea th:field="*{descripcion}" class="form-control"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Precio Base</label>
+                    <input type="number" step="0.01" th:field="*{precioBase}" class="form-control" required>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" th:field="*{activo}">
+                    <label class="form-check-label">Activo</label>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/admin/servicios}" class="btn btn-secondary">Cancelar</a>
+                    <button class="btn btn-primary">Guardar</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

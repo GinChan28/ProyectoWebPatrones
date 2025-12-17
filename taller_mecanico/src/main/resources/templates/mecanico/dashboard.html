@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title>Panel del Mecánico</title>
+
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+        <style>
+            body {
+                background: #eef3fb;
+            }
+            .page-title {
+                font-size: 2.3rem;
+                font-weight: 700;
+                text-align: center;
+                margin: 30px 0 20px 0;
+            }
+            .navbar {
+                background: #0d6efd;
+            }
+            .card-opcion {
+                border: none;
+                border-radius: 20px;
+                padding: 25px;
+                text-align: center;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                transition: 0.25s ease;
+            }
+            .card-opcion:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 25px rgba(0,0,0,0.18);
+            }
+            .icon-opcion {
+                font-size: 40px;
+                color: #0d6efd;
+                margin-bottom: 15px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand fw-bold" th:href="@{/mecanico/dashboard}">
+                    Taller Mecánico
+                </a>
+
+                <div class="ms-auto" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit"
+                                class="btn btn-light text-primary fw-semibold">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Cerrar sesión
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container py-5">
+
+            <h2 class="page-title">Panel del Mecánico</h2>
+
+            <div class="row justify-content-center g-4">
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-opcion bg-white">
+                        <i class="fa-solid fa-clipboard-list icon-opcion"></i>
+                        <h4 class="fw-bold mb-3">Gestionar Citas</h4>
+                        <p class="text-muted mb-4">
+                            Revisa las citas pendientes y las que tienes asignadas.
+                        </p>
+                        <a class="btn btn-primary btn-lg"
+                           th:href="@{/mecanico/citas}">
+                            Ver citas
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+    </body>
+</html>

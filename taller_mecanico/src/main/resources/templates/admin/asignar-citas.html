@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Asignar Citas | Admin</title>
+
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+        <style>
+            body {
+                background: #eef3fb;
+                min-height: 100vh;
+            }
+
+            .navbar-custom {
+                background: #0d6efd;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            }
+
+            .page-title {
+                font-size: 2.4rem;
+                font-weight: 700;
+                text-align: center;
+                margin: 40px 0;
+            }
+
+            .card-cita {
+                border: none;
+                border-radius: 22px;
+                background: #ffffff;
+                padding: 25px;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+                transition: all .25s ease;
+            }
+
+            .card-cita:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 14px 28px rgba(0,0,0,0.15);
+            }
+
+            .badge-pendiente {
+                background-color: #ffc107;
+                color: #000;
+            }
+
+            .btn-rounded {
+                border-radius: 40px;
+                padding: 6px 18px;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- NAVBAR ADMIN -->
+        <nav class="navbar navbar-expand-lg navbar-custom">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-white" th:href="@{/admin/dashboard}">
+                    Taller Mecánico | Admin
+                </a>
+
+                <div class="ms-auto d-flex align-items-center gap-2">
+
+                     <a th:href="@{/admin/dashboard}" class="btn btn-light btn-sm fw-semibold">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+
+                    <div sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-light text-primary fw-semibold">
+                                <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+
+
+        <!-- CONTENIDO -->
+        <div class="container py-5">
+
+            <h2 class="page-title">Asignar citas a mecánicos</h2>
+
+            <div class="row g-4">
+
+                <!-- MENSAJE SI NO HAY CITAS -->
+                <div class="col-12" th:if="${#lists.isEmpty(citas)}">
+                    <div class="alert alert-info text-center">
+                        <i class="fa-solid fa-circle-info"></i>
+                        No hay citas pendientes para asignar.
+                    </div>
+                </div>
+
+                <!-- LISTADO DE CITAS -->
+                <div class="col-md-6 col-lg-4"
+                     th:each="cita : ${citas}">
+
+                    <div class="card-cita">
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge badge-pendiente">
+                                PENDIENTE
+                            </span>
+                            <small class="text-muted">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                <span th:text="${cita.fecha}"></span>
+                            </small>
+                        </div>
+
+                        <h5 class="fw-bold mb-2">
+                            <i class="fa-solid fa-car"></i>
+                            <span th:text="${cita.vehiculo.marca + ' ' + cita.vehiculo.modelo}"></span>
+                        </h5>
+
+                        <p class="mb-1">
+                            <strong>Placa:</strong>
+                            <span th:text="${cita.vehiculo.placa}"></span>
+                        </p>
+
+                        <p class="mb-1">
+                            <strong>Servicio:</strong>
+                            <span th:text="${cita.servicio.nombre}"></span>
+                        </p>
+
+                        <p class="mb-3">
+                            <strong>Hora:</strong>
+                            <span th:text="${cita.hora}"></span>
+                        </p>
+
+                        <!-- FORM ASIGNAR MECÁNICO -->
+                        <form th:action="@{/admin/asignar-citas}" method="post">
+
+                            <input type="hidden"
+                                   name="idCita"
+                                   th:value="${cita.idCita}"/>
+
+                            <div class="mb-3">
+                                <select name="idMecanico"
+                                        class="form-select"
+                                        required>
+                                    <option value="" disabled selected>
+                                        Seleccionar mecánico
+                                    </option>
+                                    <option th:each="m : ${mecanicos}"
+                                            th:value="${m.idMecanico}"
+                                            th:text="${m.nombre + ' - ' + m.especialidad}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <button type="submit"
+                                    class="btn btn-primary btn-rounded w-100">
+                                <i class="fa-solid fa-user-check"></i>
+                                Asignar mecánico
+                            </button>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+    </body>
+</html>

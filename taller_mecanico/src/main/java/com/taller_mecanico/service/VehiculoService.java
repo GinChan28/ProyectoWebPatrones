@@ -1,32 +1,43 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.taller_mecanico.service;
 
+import com.taller_mecanico.domain.Cliente;
 import com.taller_mecanico.domain.Vehiculo;
+import com.taller_mecanico.repository.ClienteRepository;
 import com.taller_mecanico.repository.VehiculoRepository;
-import java.util.List;
 import org.springframework.stereotype.Service;
 
-/**
- *
- * @author megan
- */
+import java.util.List;
+
 @Service
 public class VehiculoService {
 
-    private final VehiculoRepository repo;
+    private final VehiculoRepository vehiculoRepository;
+    private final ClienteRepository clienteRepository;
 
-    public VehiculoService(VehiculoRepository repo) {
-        this.repo = repo;
+    public VehiculoService(VehiculoRepository vehiculoRepository,
+                           ClienteRepository clienteRepository) {
+        this.vehiculoRepository = vehiculoRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     public List<Vehiculo> porCliente(Integer idCliente) {
-        return repo.findByClienteIdCliente(idCliente);
+        return vehiculoRepository.findByClienteIdCliente(idCliente);
     }
 
-    public Vehiculo guardar(Vehiculo v) {
-        return repo.save(v);
+    // Buscar vehículos del usuario logueado
+    public List<Vehiculo> listarPorCliente(String username) {
+
+        Cliente cliente = clienteRepository.findByUsuarioUsername(username)
+                .orElseThrow(() ->
+                        new IllegalStateException(
+                                "Cliente no encontrado para el usuario: " + username
+                        )
+                );
+
+        return vehiculoRepository.findByClienteIdCliente(cliente.getIdCliente());
+    }
+
+    public Vehiculo guardar(Vehiculo vehiculo) {
+        return vehiculoRepository.save(vehiculo);
     }
 }

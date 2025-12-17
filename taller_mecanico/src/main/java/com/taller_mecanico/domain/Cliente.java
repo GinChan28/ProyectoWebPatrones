@@ -6,6 +6,7 @@ package com.taller_mecanico.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.util.List;
 
 /**
  *
@@ -27,4 +28,7 @@ public class Cliente {
 
     private String nombre;
     private String telefono;
+    
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
+    private List<Vehiculo> vehiculos;
 }

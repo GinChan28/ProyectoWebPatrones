@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Agendar Cita</title>
+
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+        <style>
+            body {
+                background: #eef3fb;
+            }
+
+            .page-title {
+                font-size: 2.3rem;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .card-form {
+                border: none;
+                background: #ffffff;
+                border-radius: 22px;
+                padding: 30px 32px;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            }
+
+            .btn-rounded {
+                border-radius: 40px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .label-icon {
+                color: #0d6efd;
+                margin-right: 6px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background:#0d6efd;">
+            <div class="container">
+
+                <!-- LOGO -->
+                <a class="navbar-brand fw-bold" th:href="@{/cliente/dashboard}">
+                    Taller Mecánico
+                </a>
+
+                <!-- BOTÓN MOBILE -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarCliente">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- CONTENIDO -->
+                <div class="collapse navbar-collapse" id="navbarCliente">
+
+                    <!-- MENÚ CENTRADO -->
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cliente/mis-vehiculos}">
+                                <i class="fa-solid fa-car"></i> Mis Vehículos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cliente/mis-citas}">
+                                <i class="fa-solid fa-calendar-check"></i> Mis Citas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" th:href="@{/cliente/agendar}">
+                                <i class="fa-solid fa-calendar-plus"></i> Agendar Cita
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- LOGOUT DERECHA -->
+                    <div class="d-flex align-items-center ms-lg-3"
+                         sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit"
+                                    class="btn btn-light btn-sm fw-semibold">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Cerrar sesión
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container py-5">
+
+            <h2 class="page-title">Agendar nueva cita</h2>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card-form">
+
+                        <form th:action="@{/cliente/agendar}" method="post">
+
+                            <!-- Vehículo -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa-solid fa-car-side label-icon"></i> Vehículo
+                                </label>
+                                <select class="form-select" name="vehiculoId" required>
+                                    <option value="" disabled selected>Selecciona un vehículo</option>
+                                    <option th:each="v : ${vehiculos}"
+                                            th:value="${v.idVehiculo}"
+                                            th:text="${v.marca + ' ' + v.modelo + ' - ' + v.placa}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Servicio -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa-solid fa-wrench label-icon"></i> Servicio
+                                </label>
+                                <select class="form-select" name="servicioId" required>
+                                    <option value="" disabled selected>Selecciona un servicio</option>
+                                    <option th:each="s : ${servicios}"
+                                            th:value="${s.idServicio}"
+                                            th:text="${s.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Fecha -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa-solid fa-calendar-day label-icon"></i> Fecha
+                                </label>
+                                <input type="date" class="form-control" name="fecha" required>
+                            </div>
+
+                            <!-- Hora -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa-solid fa-clock label-icon"></i> Hora
+                                </label>
+                                <input type="time" class="form-control" name="hora" required>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/cliente/dashboard}"
+                                   class="btn btn-outline-secondary btn-rounded">
+                                    Cancelar
+                                </a>
+
+                                <button type="submit"
+                                        class="btn btn-primary btn-rounded">
+                                    <i class="fa-solid fa-check"></i> Confirmar cita
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+    </body>
+</html>

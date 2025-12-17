@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Compra de Repuestos</title>
+
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+        <style>
+            body {
+                background: #eef3fb;
+                min-height: 100vh;
+            }
+
+            .card-repuesto {
+                border: none;
+                border-radius: 18px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+                transition: all .25s ease;
+            }
+
+            .card-repuesto:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            }
+
+            .precio {
+                font-size: 1.3rem;
+                font-weight: bold;
+                color: #0d6efd;
+            }
+
+            .stock {
+                font-size: 0.9rem;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+            <div class="container">
+
+                <!-- Marca -->
+                <a class="navbar-brand fw-bold" th:href="@{/cliente/dashboard}">
+                    Taller Mecánico 
+                </a>
+
+                <!-- Botones derecha -->
+                <div class="d-flex align-items-center gap-2 ms-auto">
+
+                    <a th:href="@{/cliente/dashboard}"
+                       class="btn btn-outline-light btn-sm fw-semibold">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Dashboard
+                    </a>
+
+                    <div sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post" class="m-0">
+                            <button type="submit"
+                                    class="btn btn-light btn-sm fw-semibold">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Cerrar sesión
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="ms-auto">
+                    <a th:href="@{/cliente/carrito}" class="btn btn-light fw-semibold">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        Carrito
+                    </a>
+                </div>
+                    
+
+                </div>
+
+            </div>
+        </nav>
+
+        <!-- CONTENIDO -->
+        <div class="container py-5">
+
+            <h2 class="fw-bold text-center mb-4">
+                Compra de Repuestos
+            </h2>
+            <div class="alert alert-danger text-center"
+                 th:if="${param.errorStock}">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                No hay suficiente stock disponible para la cantidad seleccionada.
+            </div>
+
+            <p class="text-center text-muted mb-5">
+                Selecciona los repuestos disponibles y agrégalos a tu carrito.
+            </p>
+
+
+            <div class="row g-4">
+
+                <!-- CARD REPUESTO -->
+                <div class="col-md-4" th:each="r : ${repuestos}">
+                    <div class="card card-repuesto h-100">
+                        <div class="card-body d-flex flex-column">
+
+                            <!-- NOMBRE -->
+                            <h5 class="fw-bold" th:text="${r.nombre}"></h5>
+
+                            <!-- SKU -->
+                            <p class="text-muted mb-2">
+                                SKU: <span th:text="${r.sku}"></span>
+                            </p>
+
+                            <div class="mt-auto">
+
+                                <!-- PRECIO -->
+                                <p class="precio">
+                                    ₡ <span th:text="${#numbers.formatDecimal(r.costoUnitario,1,2)}"></span>
+                                </p>
+
+                                <!-- STOCK -->
+                                <p class="stock"
+                                   th:classappend="${r.existencias > 0} ? 'text-success' : 'text-danger'">
+                                    Stock:
+                                    <span th:text="${r.existencias}"></span>
+                                </p>
+
+                                <!-- FORM AGREGAR AL CARRITO -->
+                                <form th:action="@{/cliente/carrito/agregar}"
+                                      method="post"
+                                      class="d-flex gap-2 mt-3">
+
+                                    <input type="hidden"
+                                           name="idRepuesto"
+                                           th:value="${r.idRepuesto}"/>
+
+                                    <input type="number"
+                                           name="cantidad"
+                                           class="form-control"
+                                           min="1"
+                                           th:max="${r.existencias}"
+                                           value="1"
+                                           required/>
+
+                                    <button type="submit"
+                                            class="btn btn-primary"
+                                            th:disabled="${r.existencias == 0}">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                    </button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+    </body>
+</html>

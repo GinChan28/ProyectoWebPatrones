@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Repuesto</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="col-md-6 mx-auto">
+
+        <div class="card shadow-lg rounded-4 p-4">
+            <h4 class="fw-bold mb-4"
+                th:text="${repuesto.idRepuesto == null ? 'Nuevo Repuesto' : 'Editar Repuesto'}">
+            </h4>
+
+            <form th:action="@{/admin/repuestos/guardar}"
+                  th:object="${repuesto}" method="post">
+
+                <input type="hidden" th:field="*{idRepuesto}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nombre</label>
+                    <input type="text" th:field="*{nombre}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">SKU</label>
+                    <input type="text" th:field="*{sku}" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Existencias</label>
+                    <input type="number" th:field="*{existencias}" class="form-control" min="0">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Costo Unitario</label>
+                    <input type="number" th:field="*{costoUnitario}" step="0.01" class="form-control">
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/admin/repuestos}" class="btn btn-secondary">Cancelar</a>
+                    <button class="btn btn-primary">Guardar</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

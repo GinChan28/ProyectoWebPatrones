@@ -20,6 +20,30 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     List<Cita> findByVehiculoIdVehiculo(Integer idVehiculo);
 
     List<Cita> findByEstado(Cita.Estado estado);
-
+    
+     List<Cita> findByMecanicoIdMecanicoAndEstado(
+        Integer idMecanico,
+                     Cita.Estado estado
+     );
     List<Cita> findByFechaBetween(LocalDate desde, LocalDate hasta);
+    
+    List<Cita> findByVehiculoClienteIdClienteAndEstado(
+        Integer idCliente,
+        Cita.Estado estado
+);
+
+List<Cita> findByVehiculoClienteIdClienteAndEstadoAndServicioNombreContainingIgnoreCase(
+        Integer idCliente,
+        Cita.Estado estado,
+        String servicio
+);
+
+List<Cita> findByVehiculoClienteIdClienteAndEstadoAndFecha(
+        Integer idCliente,
+        Cita.Estado estado,
+        LocalDate fecha
+);
+
+    
+   
 }

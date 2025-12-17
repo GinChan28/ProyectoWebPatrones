@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Compras</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">🧾 Historial de Compras</h2>
+
+    <div th:if="${#lists.isEmpty(ordenes)}" class="text-muted">
+        No has realizado compras todavía.
+    </div>
+
+    <div class="accordion" id="ordenesAccordion">
+
+        <div class="accordion-item mb-3" th:each="o, i : ${ordenes}">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed"
+                        data-bs-toggle="collapse"
+                        th:attr="data-bs-target='#orden'+${i.index}">
+                    Orden #<span th:text="${o.idOrden}"></span>
+                    &nbsp;—&nbsp;
+                    <span th:text="${#temporals.format(o.fecha,'dd/MM/yyyy HH:mm')}"></span>
+                    &nbsp;—&nbsp;
+                    <strong th:text="${o.estado}"></strong>
+                </button>
+            </h2>
+
+            <div class="accordion-collapse collapse"
+                 th:id="'orden'+${i.index}">
+                <div class="accordion-body">
+
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th>Repuesto</th>
+                            <th>Cant.</th>
+                            <th>Precio</th>
+                            <th>Subtotal</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="d : ${o.detalles}">
+                            <td th:text="${d.repuesto.nombre}"></td>
+                            <td th:text="${d.cantidad}"></td>
+                            <td th:text="${d.precioUnitario}"></td>
+                            <td th:text="${d.cantidad * d.precioUnitario}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

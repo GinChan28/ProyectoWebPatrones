@@ -106,6 +106,7 @@ public String evidencia(@PathVariable Integer id, Model model) {
 }
 
 
+
     @PostMapping("/{id}/evidencia")
     public String subirEvidencia(
             @PathVariable("id") Integer idCita,
@@ -132,5 +133,6 @@ public String evidencia(@PathVariable Integer id, Model model) {
             return "cita/detalle";
         }
     }
-
 }
+
+

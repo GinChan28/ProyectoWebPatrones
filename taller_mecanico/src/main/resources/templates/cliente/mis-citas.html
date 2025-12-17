@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Mis Citas</title>
+
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+        <style>
+            body {
+                background: #eef3fb;
+            }
+
+            .page-title {
+                font-size: 2.3rem;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .card-table {
+                border: none;
+                background: #ffffff;
+                border-radius: 22px;
+                padding: 25px 28px;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            }
+
+            .badge-estado {
+                font-size: .85rem;
+                padding: 6px 10px;
+                border-radius: 12px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background:#0d6efd;">
+            <div class="container">
+
+                <!-- LOGO -->
+                <a class="navbar-brand fw-bold" th:href="@{/cliente/dashboard}">
+                    Taller Mecánico
+                </a>
+
+                <!-- TOGGLER -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarCliente">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- LINKS CENTRALES -->
+                <div class="collapse navbar-collapse justify-content-center" id="navbarCliente">
+                    <ul class="navbar-nav gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/cliente/mis-vehiculos}">
+                                Mis Vehículos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white fw-semibold" th:href="@{/cliente/mis-citas}">
+                                Mis Citas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/cliente/agendar}">
+                                Agendar Cita
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- ACCIONES DERECHA -->
+                <div class="d-flex align-items-center gap-2">
+
+                    <!-- Volver al dashboard cliente -->
+                    <a th:href="@{/cliente/dashboard}"
+                       class="btn btn-outline-light btn-sm fw-semibold">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Dashboard
+                    </a>
+
+                    <!-- Logout -->
+                    <div sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post" class="m-0">
+                            <button type="submit"
+                                    class="btn btn-light btn-sm text-primary fw-semibold">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Salir
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </nav>
+
+
+        <div class="container py-5">
+
+            <h2 class="page-title">Mis Citas</h2>
+
+            <!-- Si no hay citas -->
+            <div th:if="${#lists.isEmpty(citas)}" class="text-center text-muted mt-4">
+                <i class="fa-solid fa-calendar-xmark fa-3x mb-3"></i>
+                <p class="fs-5">Todavía no tienes citas registradas.</p>
+                <a th:href="@{/cliente/agendar}" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Agendar primera cita
+                </a>
+            </div>
+
+            <!-- Tabla de citas -->
+            <div th:if="${!#lists.isEmpty(citas)}" class="row justify-content-center mt-3">
+                <div class="col-lg-10">
+                    <div class="card-table">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">
+                                <i class="fa-solid fa-calendar-check text-primary"></i>
+                                &nbsp;Historial de citas
+                            </h5>
+
+                            <a th:href="@{/cliente/agendar}" class="btn btn-sm btn-success">
+                                <i class="fa-solid fa-plus"></i> Nueva cita
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Vehículo</th>
+                                        <th>Servicio</th>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Comentario</th>
+                                        <th>Estado</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr th:each="c, idx : ${citas}">
+                                        <td th:text="${idx.index + 1}"></td>
+
+                                        <td>
+                                            <span th:text="${c.vehiculo.marca + ' ' + c.vehiculo.modelo}"></span><br>
+                                            <small class="text-muted">
+                                                Placa: <span th:text="${c.vehiculo.placa}"></span>
+                                            </small>
+                                        </td>
+
+                                        <td th:text="${c.servicio.nombre}"></td>
+                                        <td th:text="${c.fecha}"></td>
+                                        <td th:text="${c.hora}"></td>
+
+                                        <!-- COMENTARIO DEL MECÁNICO -->
+                                        <td>
+                                            <span th:if="${c.comentario != null}"
+                                                  th:text="${c.comentario}"></span>
+
+                                            <span th:if="${c.comentario == null}"
+                                                  class="text-muted fst-italic">
+                                                —
+                                            </span>
+                                        </td>
+
+                                        <!-- ESTADO -->
+                                        <td>
+                                            <span class="badge badge-estado"
+                                                  th:switch="${c.estado.name()}">
+
+                                                <span th:case="'PENDIENTE'" class="bg-warning text-dark">PENDIENTE</span>
+                                                <span th:case="'EN_PROGRESO'" class="bg-primary text-white">EN PROGRESO</span>
+                                                <span th:case="'FINALIZADA'" class="bg-success text-white">FINALIZADA</span>
+                                                <span th:case="*" class="bg-secondary text-white"
+                                                      th:text="${c.estado}"></span>
+                                            </span>
+                                        </td>
+
+                                        <!-- ACCIONES -->
+                                        <td class="text-center">
+
+                                            <!-- CANCELAR -->
+                                            <form th:if="${c.estado.name() == 'PENDIENTE'}"
+                                                  th:action="@{/cliente/citas/cancelar/{id}(id=${c.idCita})}"
+                                                  method="post"
+                                                  class="d-inline">
+                                                <button class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('¿Seguro que deseas cancelar esta cita?');">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                    Cancelar
+                                                </button>
+                                            </form>
+
+                                            <!-- REPROGRAMAR -->
+                                            <a th:if="${c.estado.name() == 'PENDIENTE'}"
+                                               th:href="@{/cliente/citas/reprogramar/{id}(id=${c.idCita})}"
+                                               class="btn btn-sm btn-outline-primary ms-1">
+                                                <i class="fa-solid fa-clock"></i>
+                                                Reprogramar
+                                            </a>
+
+                                            <span th:if="${c.estado.name() != 'PENDIENTE'}"
+                                                  class="text-muted small">
+                                                No editable
+                                            </span>
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+    </body>
+</html>

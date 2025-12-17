@@ -1,19 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.taller_mecanico.repository;
 
 import com.taller_mecanico.domain.Repuesto;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-/**
- *
- * @author megan
- */
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
 public interface RepuestoRepository extends JpaRepository<Repuesto, Integer> {
+
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE Repuesto r
+        SET r.existencias = r.existencias - :cantidad
+        WHERE r.idRepuesto = :id
+          AND r.existencias >= :cantidad
+    """)
+    int descontarStock(
+        @Param("id") Integer id,
+        @Param("cantidad") Integer cantidad
+    );
 
     List<Repuesto> findByActivoTrue();
 
@@ -22,6 +32,6 @@ public interface RepuestoRepository extends JpaRepository<Repuesto, Integer> {
     boolean existsByNombre(String nombre);
 
     Optional<Repuesto> findBySku(String sku);
-    
+
     Repuesto findByNombreOrSku(String nombre, String sku);
 }

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Servicios</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+    <style>
+        body {
+            background: #eef3fb;
+        }
+
+        .card-table {
+            border: none;
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 25px 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/cliente/dashboard}">
+            Taller Mecánico
+        </a>
+
+        <div class="ms-auto">
+            <a th:href="@{/cliente/dashboard}"
+               class="btn btn-outline-light btn-sm fw-semibold">
+                <i class="fa-solid fa-arrow-left"></i>
+                Dashboard
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+
+    <h2 class="fw-bold mb-4 text-center">
+        <i class="fa-solid fa-clock-rotate-left text-primary"></i>
+        Historial de Servicios
+    </h2>
+
+    <!-- FILTROS -->
+    <form method="get" class="row g-3 mb-4 justify-content-center">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Fecha</label>
+            <input type="date" name="fecha" class="form-control"
+                   th:value="${fecha}">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Servicio</label>
+            <input type="text" name="servicio" class="form-control"
+                   placeholder="Ej: Cambio de aceite"
+                   th:value="${servicio}">
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end gap-2">
+            <button class="btn btn-primary w-100">
+                <i class="fa-solid fa-filter"></i>
+            </button>
+
+            <a th:href="@{/cliente/historial-servicios}"
+               class="btn btn-outline-secondary">
+                Limpiar
+            </a>
+        </div>
+    </form>
+
+    <!-- CONTENEDOR BLANCO -->
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            <div class="card-table">
+
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Vehículo</th>
+                            <th>Servicio</th>
+                            <th>Mecánico</th>
+                            <th>Comentario</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="c : ${historial}">
+                            <td>
+                                <strong th:text="${c.fecha}"></strong><br>
+                                <small class="text-muted" th:text="${c.hora}"></small>
+                            </td>
+
+                            <td>
+                                <span th:text="${c.vehiculo.placa}"></span><br>
+                                <small class="text-muted"
+                                       th:text="${c.vehiculo.marca + ' ' + c.vehiculo.modelo}">
+                                </small>
+                            </td>
+
+                            <td th:text="${c.servicio.nombre}"></td>
+
+                            <td th:text="${c.mecanico.nombre}"></td>
+
+                            <td>
+                                <span th:if="${c.comentario != null}"
+                                      th:text="${c.comentario}"></span>
+                                <span th:if="${c.comentario == null}"
+                                      class="text-muted fst-italic">
+                                    Sin comentario
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center text-muted py-3"
+                         th:if="${#lists.isEmpty(historial)}">
+                        <i class="fa-solid fa-circle-info"></i>
+                        No hay servicios registrados.
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

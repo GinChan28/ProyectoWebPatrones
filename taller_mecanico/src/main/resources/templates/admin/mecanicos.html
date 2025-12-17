@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Mecánicos</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+    <style>
+        body { background: #eef3fb; }
+        .card-mecanico {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 6px 18px rgba(0,0,0,.1);
+            transition: .25s;
+        }
+        .card-mecanico:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Gestión de Mecánicos</h2>
+
+        <div>
+ <a th:href="@{/admin/dashboard}" class="btn btn-light btn-sm fw-semibold">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+            <a th:href="@{/admin/mecanicos/nuevo}" class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i> Nuevo Mecánico
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-4" th:each="m : ${mecanicos}">
+            <div class="card card-mecanico p-4">
+
+                <h5 class="fw-bold" th:text="${m.nombre}"></h5>
+                <p class="mb-1"><strong>Cédula:</strong> <span th:text="${m.cedula}"></span></p>
+                <p class="mb-3"><strong>Especialidad:</strong> <span th:text="${m.especialidad}"></span></p>
+
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/admin/mecanicos/editar/{id}(id=${m.idMecanico})}"
+                       class="btn btn-outline-primary btn-sm">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+
+                    <a th:href="@{/admin/mecanicos/eliminar/{id}(id=${m.idMecanico})}"
+                       class="btn btn-outline-danger btn-sm"
+                       onclick="return confirm('¿Seguro que deseas eliminar este mecánico?');">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

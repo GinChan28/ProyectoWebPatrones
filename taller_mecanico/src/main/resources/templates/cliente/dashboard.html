@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title>Panel del Cliente</title>
+
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+        <style>
+            body {
+                background: #eef3fb;
+                min-height: 100vh;
+            }
+
+            .navbar-custom {
+                background: #0d6efd;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            }
+
+            .main-container {
+                padding-top: 50px;
+                padding-bottom: 50px;
+            }
+
+            .card-menu {
+                border: none;
+                border-radius: 20px;
+                padding: 30px;
+                text-align: center;
+                background: white;
+                min-height: 250px;
+                transition: all .25s ease;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            }
+
+            .card-menu:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            }
+
+            .card-menu i {
+                font-size: 40px;
+                margin-bottom: 15px;
+                color: #0d6efd;
+            }
+
+            h2 {
+                font-size: 2.4rem;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 45px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-expand-lg navbar-custom">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-white" href="#">Taller Mecánico</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav" aria-expanded="false">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link text-white fw-semibold" th:href="@{/cliente/mis-vehiculos}">
+                                Mis Vehículos
+                            </a>
+                        </li>
+                        <li class="nav-item ms-4">
+                            <a class="nav-link text-white fw-semibold" th:href="@{/cliente/mis-citas}">
+                                Mis Citas
+                            </a>
+                        </li>
+                        <li class="nav-item ms-4">
+                            <a class="nav-link text-white fw-semibold" th:href="@{/cliente/agendar}">
+                                Agendar Cita
+                            </a>
+                        </li>
+                        <li class="nav-item ms-4">
+                            <a class="nav-link text-white fw-semibold" th:href="@{/cliente/ordenes}" >
+                                Mis Compras
+                            </a>
+
+                        </li>
+                        <li class="nav-item ms-4">
+                            <a class="nav-link text-white fw-semibold" th:href="@{/cliente/historial-servicios}" >
+                                Historial de Servicios
+                            </a>
+
+                        </li>
+
+                        </li>
+                        <li class="nav-item ms-4" sec:authorize="isAuthenticated()">
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-light text-primary fw-semibold">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    Cerrar sesión
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- CUERPO PRINCIPAL -->
+        <div class="container main-container">
+
+            <h2>Bienvenido al Panel del Cliente</h2>
+
+            <div class="row justify-content-center g-5">
+
+                <!-- MIS VEHÍCULOS -->
+                <div class="col-md-4">
+                    <div class="card-menu">
+                        <i class="fa-solid fa-car-side"></i>
+                        <h4 class="fw-bold">Mis Vehículos</h4>
+                        <p class="text-muted">Consulta y gestiona tus vehículos registrados.</p>
+                        <a th:href="@{/cliente/mis-vehiculos}" class="btn btn-primary mt-3 px-4">
+                            Ver mis vehículos
+                        </a>
+                    </div>
+                </div>
+
+                <!-- MIS CITAS -->
+                <div class="col-md-4">
+                    <div class="card-menu">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <h4 class="fw-bold">Mis Citas</h4>
+                        <p class="text-muted">Consulta tus citas programadas y su estado.</p>
+                        <a th:href="@{/cliente/mis-citas}" class="btn btn-primary mt-3 px-4">
+                            Ver mis citas
+                        </a>
+                    </div>
+                </div>
+
+                <!-- AGENDAR -->
+                <div class="col-md-4">
+                    <div class="card-menu">
+                        <i class="fa-solid fa-calendar-plus"></i>
+                        <h4 class="fw-bold">Agendar Cita</h4>
+                        <p class="text-muted">Agenda una nueva cita de servicio o reparación.</p>
+                        <a th:href="@{/cliente/agendar}" class="btn btn-primary mt-3 px-4">
+                            Agendar ahora
+                        </a>
+                    </div>
+                </div>
+
+                <!-- REPUESTOS -->
+                <div class="col-md-4">
+                    <div class="card-menu">
+                        <i class="fa-solid fa-gears"></i>
+                        <h4 class="fw-bold">Repuestos</h4>
+                        <p class="text-muted">Compra repuestos y gestiona tu carrito de compras.</p>
+                        <a th:href="@{/cliente/repuestos}" class="btn btn-primary mt-3 px-4">
+                            Ver Repuestos
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CARRITO -->
+                <div class="col-md-4">
+                    <div class="card-menu">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <h4 class="fw-bold">Carrito de Compras</h4>
+                        <p class="text-muted">Revisa los repuestos seleccionados y finaliza tu compra.</p>
+                        <a th:href="@{/cliente/carrito}" class="btn btn-primary mt-3 px-4">
+                            Ir al Carrito
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+
+    </body>
+</html>

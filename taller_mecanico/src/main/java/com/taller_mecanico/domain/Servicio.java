@@ -26,7 +26,8 @@ public class Servicio {
 
     @Column(name = "precio_base")
     private Double precioBase;
-
-    private Boolean activo;
+    
+    @Column(nullable = false)
+    private Boolean activo = true;
 
 }

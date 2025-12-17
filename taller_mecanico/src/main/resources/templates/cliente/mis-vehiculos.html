@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Mis Vehículos</title>
+
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+        <style>
+            body {
+                background: #eef3fb;
+            }
+
+            .page-title {
+                font-size: 2.3rem;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .card-vehiculo {
+                border: none;
+                background: white;
+                border-radius: 20px;
+                padding: 25px;
+                transition: 0.25s ease;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            }
+
+            .card-vehiculo:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            }
+
+            .vehiculo-icon {
+                font-size: 40px;
+                color: #0d6efd;
+            }
+
+            .vehiculo-header {
+                font-size: 1.3rem;
+                font-weight: 600;
+                margin-top: 10px;
+            }
+
+            .btn-rounded {
+                border-radius: 40px;
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+    <div class="container">
+
+        <!-- Marca -->
+        <a class="navbar-brand fw-bold" th:href="@{/cliente/dashboard}">
+            Taller Mecánico 
+        </a>
+
+        <!-- Botones derecha -->
+        <div class="d-flex align-items-center gap-2 ms-auto">
+
+            <a th:href="@{/cliente/dashboard}"
+               class="btn btn-outline-light btn-sm fw-semibold">
+                <i class="fa-solid fa-arrow-left"></i>
+                Dashboard
+            </a>
+
+            <div sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit"
+                            class="btn btn-light btn-sm fw-semibold">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Cerrar sesión
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</nav>
+
+
+        <div class="container py-5">
+
+            <h2 class="page-title">Mis Vehículos</h2>
+
+            <div class="text-center mb-4">
+                <a class="btn btn-success btn-lg btn-rounded"
+                   th:href="@{/cliente/vehiculo/nuevo}">
+                    <i class="fa-solid fa-plus"></i> Registrar nuevo vehículo
+                </a>
+            </div>
+
+            <div th:if="${exito}" class="alert alert-success text-center" th:text="${exito}"></div>
+            <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
+
+            <div class="row g-4 justify-content-center">
+
+                <!-- Sin vehículos -->
+                <div th:if="${#lists.isEmpty(vehiculos)}" class="text-center text-muted mt-4">
+                    <i class="fa-solid fa-car-side fa-3x mb-3"></i>
+                    <p class="fs-5">Todavía no tienes vehículos registrados.</p>
+                </div>
+
+                <!-- Tarjetas de vehículos -->
+                <div class="col-md-4" th:each="v : ${vehiculos}">
+                    <div class="card-vehiculo">
+
+                        <div class="text-center">
+                            <i class="fa-solid fa-car-side vehiculo-icon"></i>
+                            <div class="vehiculo-header"
+                                 th:text="${v.marca + ' ' + v.modelo}">
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <p><strong>Placa:</strong> <span th:text="${v.placa}"></span></p>
+                        <p><strong>Año:</strong> <span th:text="${v.anno}"></span></p>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <!-- Editar -->
+                            <a class="btn btn-warning btn-rounded text-dark"
+                               th:href="@{'/vehiculo/editar/' + ${v.idVehiculo}}">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </a>
+
+                            <!-- Eliminar -->
+                            <form th:action="@{'/vehiculo/eliminar/' + ${v.idVehiculo}}"
+                                  method="post"
+                                  onsubmit="return confirm('¿Seguro que deseas eliminar este vehículo?');">
+                                <button class="btn btn-danger btn-rounded" type="submit">
+                                    <i class="fa-solid fa-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+    </body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mecánico</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="col-md-6 mx-auto">
+
+        <div class="card p-4 shadow-lg rounded-4">
+
+            <h3 class="fw-bold mb-4"
+                th:text="${mecanico.idMecanico == null ? 'Nuevo Mecánico' : 'Editar Mecánico'}">
+            </h3>
+
+            <form th:action="@{/admin/mecanicos/guardar}"
+                  th:object="${mecanico}" method="post">
+
+                <input type="hidden" th:field="*{idMecanico}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nombre</label>
+                    <input type="text" th:field="*{nombre}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Cédula</label>
+                    <input type="text" th:field="*{cedula}" class="form-control" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Especialidad</label>
+                    <input type="text" th:field="*{especialidad}" class="form-control">
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/admin/mecanicos}" class="btn btn-secondary">Cancelar</a>
+                    <button class="btn btn-primary">Guardar</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

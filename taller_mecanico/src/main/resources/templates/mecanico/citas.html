@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Citas del Mecánico</title>
+
+        <link rel="stylesheet"
+              th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+        <link rel="stylesheet"
+              th:href="@{/webjars/font-awesome/7.0.0/css/all.min.css}">
+
+        <style>
+            body {
+                background: #eef3fb;
+            }
+
+            .navbar {
+                background: #0d6efd;
+            }
+
+            .page-title {
+                font-size: 2.1rem;
+                font-weight: 700;
+                text-align: center;
+                margin: 30px 0 20px 0;
+            }
+
+            .card-box {
+                border-radius: 18px;
+                border: none;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+                margin-bottom: 25px;
+            }
+
+            .badge-estado {
+                font-size: 0.8rem;
+            }
+
+            textarea.form-control {
+                resize: vertical;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand fw-bold" th:href="@{/mecanico/dashboard}">
+                    Taller Mecánico
+                </a>
+
+                <div sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit"
+                                class="btn btn-light text-primary fw-semibold">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Cerrar sesión
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </nav>
+
+        <div class="container py-4">
+
+            <h2 class="page-title">Gestión de Citas</h2>
+
+            <!-- MENSAJES FLASH -->
+            <div th:if="${exito}" class="alert alert-success text-center" th:text="${exito}"></div>
+            <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
+
+            <!-- ===================== CITAS PENDIENTES ===================== -->
+            <div class="card card-box">
+                <div class="card-header bg-white border-0 d-flex align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fa-solid fa-clock text-warning"></i>
+                        &nbsp;Citas pendientes sin mecánico
+                    </h5>
+                </div>
+                <div class="card-body">
+
+                    <p th:if="${#lists.isEmpty(pendientes)}" class="text-muted mb-0">
+                        No hay citas pendientes por tomar.
+                    </p>
+
+                    <div th:if="${!#lists.isEmpty(pendientes)}" class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Vehículo</th>
+                                    <th>Placa</th>
+                                    <th>Servicio</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="c : ${pendientes}">
+                                    <td th:text="${c.idCita}"></td>
+                                    <td th:text="${c.vehiculo.marca + ' ' + c.vehiculo.modelo}"></td>
+                                    <td th:text="${c.vehiculo.placa}"></td>
+                                    <td th:text="${c.servicio.nombre}">Servicio</td>
+                                    <td th:text="${c.fecha}"></td>
+                                    <td th:text="${c.hora}"></td>
+                                    <td>
+                                        <!-- FORM TOMAR CITA -->
+                                        <form th:action="@{/mecanico/cita/tomar}" method="post" class="d-flex flex-column gap-2">
+                                            <input type="hidden" name="idCita" th:value="${c.idCita}"/>
+
+                                            <textarea class="form-control form-control-sm"
+                                                      name="comentario"
+                                                      rows="2"
+                                                      placeholder="Comentario opcional al tomar la cita"></textarea>
+
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="fa-solid fa-hand-pointer"></i> Tomar cita
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ===================== CITAS ASIGNADAS AL MECÁNICO ===================== -->
+            <div class="card card-box">
+                <div class="card-header bg-white border-0 d-flex align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fa-solid fa-wrench text-primary"></i>
+                        &nbsp;Mis citas asignadas
+                    </h5>
+                </div>
+                <div class="card-body">
+
+                    <p th:if="${#lists.isEmpty(asignadas)}" class="text-muted mb-0">
+                        No tienes citas asignadas actualmente.
+                    </p>
+
+                    <div th:if="${!#lists.isEmpty(asignadas)}" class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Vehículo</th>
+                                    <th>Placa</th>
+                                    <th>Servicio</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Estado</th>
+                                    <th>Comentario</th>
+                                    <th style="width:260px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="c : ${asignadas}">
+                                    <td th:text="${c.idCita}"></td>
+                                    <td th:text="${c.vehiculo.marca + ' ' + c.vehiculo.modelo}"></td>
+                                    <td th:text="${c.vehiculo.placa}"></td>
+                                    <td th:text="${c.servicio.nombre}">Servicio</td>
+                                    <td th:text="${c.fecha}"></td>
+                                    <td th:text="${c.hora}"></td>
+                                    <td>
+                                        <span class="badge bg-secondary badge-estado"
+                                              th:text="${c.estado}"></span>
+                                    </td>
+                                    <td th:text="${c.comentario}"></td>
+                                    <td>
+                                        <div class="d-flex flex-column gap-2">
+                                            <!-- FINALIZAR CITA -->
+                                            <form th:action="@{/mecanico/cita/finalizar}" method="post">
+                                                <input type="hidden" name="idCita" th:value="${c.idCita}"/>
+                                                <textarea class="form-control form-control-sm mb-1"
+                                                          name="comentario"
+                                                          rows="2"
+                                                          placeholder="Comentario al finalizar (opcional)"></textarea>
+                                                <button type="submit" class="btn btn-sm btn-primary w-100">
+                                                    <i class="fa-solid fa-check"></i> Finalizar
+                                                </button>
+                                            </form>
+
+                                            <!-- CANCELAR CITA -->
+                                            <form th:action="@{/mecanico/cita/cancelar}" method="post"
+                                                  onsubmit="return confirm('¿Seguro que deseas cancelar esta cita?');">
+                                                <input type="hidden" name="idCita" th:value="${c.idCita}"/>
+                                                <textarea class="form-control form-control-sm mb-1"
+                                                          name="comentario"
+                                                          rows="2"
+                                                          placeholder="Motivo de cancelación (opcional)"></textarea>
+                                                <button type="submit" class="btn btn-sm btn-danger w-100">
+                                                    <i class="fa-solid fa-xmark"></i> Cancelar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+    </body>
+</html>

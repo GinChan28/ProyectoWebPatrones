@@ -193,6 +193,55 @@ CREATE TABLE archivo (
   INDEX ndx_tipo (tipo)
 ) ENGINE = InnoDB;
 
+CREATE TABLE orden_compra (
+    id_orden INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    fecha DATETIME,
+    estado ENUM('CARRITO','PAGADA') NOT NULL,
+    total DECIMAL(12,2) NOT NULL DEFAULT 0,
+
+    CONSTRAINT fk_orden_cliente
+        FOREIGN KEY (id_cliente)
+        REFERENCES cliente(id_cliente)
+);
+
+CREATE TABLE detalle_orden (
+    id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+    id_orden INT NOT NULL,
+    id_repuesto INT NOT NULL,
+    cantidad INT NOT NULL,
+    precio_unitario DECIMAL(12,2) NOT NULL,
+
+    CONSTRAINT fk_detalle_orden
+        FOREIGN KEY (id_orden)
+        REFERENCES orden_compra(id_orden),
+
+    CONSTRAINT fk_detalle_repuesto
+        FOREIGN KEY (id_repuesto)
+        REFERENCES repuesto(id_repuesto),
+
+    UNIQUE (id_orden, id_repuesto)
+);
+
+CREATE TABLE carrito_item (
+    id_item INT AUTO_INCREMENT PRIMARY KEY,
+    id_orden INT NOT NULL,
+    id_repuesto INT NOT NULL,
+    cantidad INT NOT NULL DEFAULT 1,
+    precio_unitario DECIMAL(12,2) NOT NULL,
+
+    CONSTRAINT fk_item_orden
+        FOREIGN KEY (id_orden) REFERENCES orden_compra(id_orden),
+
+    CONSTRAINT fk_item_repuesto
+        FOREIGN KEY (id_repuesto) REFERENCES repuesto(id_repuesto),
+
+    CONSTRAINT chk_cantidad CHECK (cantidad > 0),
+
+    UNIQUE (id_orden, id_repuesto)
+);
+
+
 
 -- Perfiles de Admin y mecánico
 INSERT INTO usuario (username, password, nombre, apellidos, correo, telefono, activo)
@@ -208,7 +257,9 @@ WHERE NOT EXISTS (
 );
 -- Mecanico
 INSERT INTO usuario (username, password, nombre, apellidos, correo, telefono, activo)
-VALUES ('mecanico', '{noop}meca1234', 'Miguel', 'Mecánico', 'mecanico@default.com', '7899-6010', TRUE)
+VALUES ('mecanico', '{noop}meca1234', 'Miguel', 'Mecánico', 'mecanico@default.com', '7899-6010', TRUE),
+('mecaTr', '{noop}meca2587', 'Juan', 'Tramado', 'tramado@taller.com', '00000001', true),
+('mecaEsp', '{noop}meca7895', 'Diego', 'Especialista', 'especialista@taller.com', '00000002', true)
 ON DUPLICATE KEY UPDATE username=username;
 
 INSERT INTO usuario_rol (id_usuario, id_rol)
@@ -219,11 +270,30 @@ WHERE NOT EXISTS (
   WHERE ur.id_usuario=u.id_usuario AND ur.id_rol=r.id_rol
 );
 
+INSERT INTO usuario_rol (id_usuario, id_rol)
+SELECT u.id_usuario, r.id_rol
+FROM usuario u JOIN rol r ON u.username='cliente' AND r.rol='CLIENTE'
+WHERE NOT EXISTS (
+      SELECT 1 FROM usuario_rol ur
+      WHERE ur.id_usuario=u.id_usuario AND ur.id_rol=r.id_rol
+  );
+
+
 INSERT INTO mecanico (id_usuario, nombre, cedula, especialidad)
-SELECT u.id_usuario, 'Mecánico General', 'N/A', 'General'
+SELECT u.id_usuario, 'Mecánico General', '402680967', 'General'
 FROM usuario u
 WHERE u.username='mecanico'
   AND NOT EXISTS (SELECT 1 FROM mecanico m WHERE m.id_usuario=u.id_usuario);
+  
+INSERT INTO mecanico (id_usuario, nombre, cedula, especialidad)
+SELECT u.id_usuario, 'Mecánico Tramado', '4026802584', 'Tramado'
+FROM usuario u
+WHERE u.username='mecaTr';
+
+INSERT INTO mecanico (id_usuario, nombre, cedula, especialidad)
+SELECT u.id_usuario, 'Mecánico Especialista', '40268052', 'Frenos'
+FROM usuario u
+WHERE u.username='mecaEsp';
 
 
 -- Servicios 
@@ -233,20 +303,84 @@ INSERT INTO servicio (nombre, descripcion, precio_base, activo) VALUES
 ('Alineación y balanceo','Servicio de alineación y balanceo',35000,TRUE)
 ON DUPLICATE KEY UPDATE descripcion=VALUES(descripcion), precio_base=VALUES(precio_base), activo=VALUES(activo);
 
--- Cliente
-INSERT INTO cliente (id_usuario, nombre, telefono) VALUES
-(1, 'Carlos Ramírez', '88810001'),
-(2, 'María Fernández', '88810002'),
-(3, 'Luis Gómez', '88810003'),
-(4, 'Ana Rodríguez', '88810004'),
-(5, 'Jorge Salazar', '88810005');
 
-INSERT INTO usuario (username, password, nombre, apellidos, correo, telefono, ruta_imagen) VALUES
-('carlosr', '1234', 'Carlos', 'Ramírez', 'carlos.ramirez@example.com', '88810001', NULL),
-('mariaf', '1234', 'María', 'Fernández', 'maria.fernandez@example.com', '88810002', NULL),
-('luisg', '1234', 'Luis', 'Gómez', 'luis.gomez@example.com', '88810003', NULL),
-('anar', '1234', 'Ana', 'Rodríguez', 'ana.rodriguez@example.com', '88810004', NULL),
-('jorges', '1234', 'Jorge', 'Salazar', 'jorge.salazar@example.com', '88810005', NULL);
+
+INSERT INTO usuario (username, password, nombre, apellidos, correo, telefono, activo)
+VALUES
+('carlosr', '{noop}1234', 'Carlos', 'Ramírez', 'carlos.ramirez@example.com', '88810001', 1),
+('mariaf', '{noop}1234', 'María', 'Fernández', 'maria.fernandez@example.com', '88810002', 1),
+('luisg', '{noop}1234', 'Luis', 'Gómez', 'luis.gomez@example.com', '88810003', 1),
+('anar', '{noop}1234', 'Ana', 'Rodríguez', 'ana.rodriguez@example.com', '88810004', 1),
+('jorges', '{noop}1234', 'Jorge', 'Salazar', 'jorge.salazar@example.com', '88810005', 1)
+ON DUPLICATE KEY UPDATE username=username;
+
+
+
+-- Cliente
+
+INSERT INTO cliente (id_usuario, nombre, telefono) VALUES
+(3, 'Carlos Ramírez', '88810001'),
+(4, 'María Fernández', '88810002'),
+(5, 'Luis Gómez', '88810003'),
+(6, 'Ana Rodríguez', '88810004'),
+(7, 'Jorge Salazar', '88810005');
+
+INSERT INTO cliente (id_usuario, nombre, telefono)
+SELECT u.id_usuario,
+       CONCAT(u.nombre, ' ', u.apellidos),
+       u.telefono
+FROM usuario u
+JOIN usuario_rol ur ON ur.id_usuario = u.id_usuario
+JOIN rol r ON r.id_rol = ur.id_rol
+LEFT JOIN cliente c ON c.id_usuario = u.id_usuario
+WHERE r.rol = 'CLIENTE'
+  AND c.id_cliente IS NULL;
+
+
+
+
+INSERT INTO repuesto (nombre, sku, existencias, costo_unitario, activo)
+VALUES
+('Bujía', 'SKU-001', 50, 3500.00, true),
+('Filtro de aceite', 'SKU-002', 20, 4500.00, true),
+('Pastillas de freno', 'SKU-003', 15, 12000.00, true);
+
+INSERT INTO usuario_rol (id_usuario, id_rol)
+SELECT u.id_usuario, r.id_rol
+FROM usuario u
+JOIN rol r ON r.rol = 'CLIENTE'
+WHERE u.username IN ('carlosr','mariaf','luisg','anar','jorges')
+AND NOT EXISTS (
+    SELECT 1
+    FROM usuario_rol ur
+    WHERE ur.id_usuario = u.id_usuario
+      AND ur.id_rol = r.id_rol
+);
+
+INSERT INTO usuario_rol (id_usuario, id_rol)
+SELECT u.id_usuario, r.id_rol
+FROM usuario u
+JOIN rol r ON r.rol = 'MECANICO'
+WHERE u.username IN ('mecanico', 'mecaTr', 'mecaEsp')
+AND NOT EXISTS (
+    SELECT 1 
+    FROM usuario_rol ur 
+    WHERE ur.id_usuario = u.id_usuario
+      AND ur.id_rol = r.id_rol
+);
+
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE usuario
+SET password = CONCAT('{noop}', REPLACE(password, '{noop}', ''))
+WHERE password NOT LIKE '{noop}%';
+SET SQL_SAFE_UPDATES = 1;
+
+
+-- SELECT id_usuario, nombre FROM usuario;
+-- SELECT id_usuario FROM usuario;
+-- SELECT id_usuario, username FROM usuario;
+-- SELECT id_usuario FROM usuario;
+
 
 ALTER TABLE usuario DROP CHECK usuario_chk_1;
-
